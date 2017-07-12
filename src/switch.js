@@ -64,7 +64,7 @@ export default class Switch extends Component {
 
   constructor(props, context) {
     super(props, context);
-    this.padding = props.padding ? 5 : 0;
+    this.padding = props.padding ? 3 : 0;
     this.transformValue = (props.switchWidth - props.buttonWidth - this.padding);
     this.state = {
       value: props.defaultValue,
