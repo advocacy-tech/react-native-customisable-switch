@@ -5,37 +5,34 @@ import {
   View,
   Animated,
 } from 'react-native';
-
 import styles from './styles.js';
-
+import PropTypes from 'prop-types';
 export default class Switch extends Component {
-
   static propTypes = {
-    defaultValue: React.PropTypes.bool,
-    onChangeValue: React.PropTypes.func,
-    activeText: React.PropTypes.string,
-    inactiveText: React.PropTypes.string,
-    fontSize: React.PropTypes.number, 
-    activeTextColor: React.PropTypes.string,
-    inactiveTextColor: React.PropTypes.string,
-    activeBackgroundColor: React.PropTypes.string,
-    inactiveBackgroundColor: React.PropTypes.string,
-    activeButtonBackgroundColor: React.PropTypes.string,
-    inactiveButtonBackgroundColor: React.PropTypes.string,
-    switchWidth: React.PropTypes.number,
-    switchHeight: React.PropTypes.number,
-    switchBorderRadius: React.PropTypes.number,
-    switchBorderColor: React.PropTypes.string,
-    switchBorderWidth: React.PropTypes.number,
-    buttonWidth: React.PropTypes.number,
-    buttonHeight: React.PropTypes.number,
-    buttonBorderRadius: React.PropTypes.number,
-    buttonBorderColor: React.PropTypes.string,
-    buttonBorderWidth: React.PropTypes.number,
-    animationTime: React.PropTypes.number,
-    padding: React.PropTypes.bool,
+    defaultValue: PropTypes.bool,
+    onChangeValue: PropTypes.func,
+    activeText: PropTypes.string,
+    inactiveText: PropTypes.string,
+    fontSize: PropTypes.number, 
+    activeTextColor: PropTypes.string,
+    inactiveTextColor: PropTypes.string,
+    activeBackgroundColor: PropTypes.string,
+    inactiveBackgroundColor: PropTypes.string,
+    activeButtonBackgroundColor: PropTypes.string,
+    inactiveButtonBackgroundColor: PropTypes.string,
+    switchWidth: PropTypes.number,
+    switchHeight: PropTypes.number,
+    switchBorderRadius: PropTypes.number,
+    switchBorderColor: PropTypes.string,
+    switchBorderWidth: PropTypes.number,
+    buttonWidth: PropTypes.number,
+    buttonHeight: PropTypes.number,
+    buttonBorderRadius: PropTypes.number,
+    buttonBorderColor: PropTypes.string,
+    buttonBorderWidth: PropTypes.number,
+    animationTime: PropTypes.number,
+    padding: PropTypes.bool,
   };
-
   static defaultProps = {
     defaultValue: false,
     onChangeValue: () => null,
@@ -61,7 +58,6 @@ export default class Switch extends Component {
     animationTime: 150,
     padding: true,
   }
-
   constructor(props, context) {
     super(props, context);
     this.padding = props.padding ? 3 : 0;
@@ -73,7 +69,6 @@ export default class Switch extends Component {
       buttonBackgroundColor: new Animated.Value(props.value ? 90 : -90),
     };
   }
-
   componentWillReceiveProps(nextProps) {
     this.setState({
       value: nextProps.defaultValue,
@@ -82,7 +77,6 @@ export default class Switch extends Component {
       buttonBackgroundColor: new Animated.Value(nextProps.value ? 90 : -90)
     });
   }
-
   startGroupAnimations = () => {
     const { animationTime, onChangeValue } = this.props;
     this.setState({ value: !this.state.value }, () => {
@@ -102,9 +96,7 @@ export default class Switch extends Component {
         })
       ]).start(onChangeValue(value));
     });
-
   }
-
 render() {
     const {
       transformValue,
@@ -112,7 +104,6 @@ render() {
       buttonBackgroundColor,
       value,
     } = this.state;
-
     const {
       activeText,
       inactiveText,
@@ -134,7 +125,6 @@ render() {
       buttonBorderColor,
       buttonBorderWidth,
     } = this.props;
-
     const backgroundColorValue = backgroundColor.interpolate({
       inputRange: [-90, 90],
       outputRange: [
@@ -142,7 +132,6 @@ render() {
         activeBackgroundColor,
       ],
     });
-
     const buttonBackgroundColorValue = buttonBackgroundColor.interpolate({
       inputRange: [-90, 90],
       outputRange: [
@@ -150,10 +139,8 @@ render() {
         activeButtonBackgroundColor,
       ],
     });
-
     const containerHeight = switchHeight > buttonHeight ? switchHeight : buttonHeight;
     const containerWidth = switchWidth > buttonWidth ? switchWidth : buttonWidth;
-
     return (
       <TouchableWithoutFeedback
         onPress={this.startGroupAnimations}
@@ -226,5 +213,4 @@ render() {
       </TouchableWithoutFeedback>
     );
   }
-}   
-  
+}
