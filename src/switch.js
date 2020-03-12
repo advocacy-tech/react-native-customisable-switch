@@ -32,10 +32,13 @@ export default class Switch extends Component {
     buttonBorderWidth: PropTypes.number,
     animationTime: PropTypes.number,
     padding: PropTypes.bool,
+    disableSwitch: PropTypes.bool,
+    switchOffCallback: PropTypes.func,
   };
   static defaultProps = {
     defaultValue: false,
     onChangeValue: () => null,
+    switchOffCallback: () => null,
     activeText: '',
     inactiveText: '',
     fontSize: 16,
@@ -57,6 +60,7 @@ export default class Switch extends Component {
     buttonBorderWidth: 0,
     animationTime: 150,
     padding: true,
+    disableSwitch: false,
   }
   constructor(props, context) {
     super(props, context);
@@ -78,7 +82,7 @@ export default class Switch extends Component {
     });
   }
   startGroupAnimations = () => {
-    const { animationTime, onChangeValue } = this.props;
+    const { animationTime, onChangeValue, switchOffCallback } = this.props;
     this.setState({ value: !this.state.value }, () => {
       const { value } = this.state;
       Animated.parallel([
@@ -124,6 +128,8 @@ render() {
       buttonBorderRadius,
       buttonBorderColor,
       buttonBorderWidth,
+      disableSwitch,
+      switchOffCallback,
     } = this.props;
     const backgroundColorValue = backgroundColor.interpolate({
       inputRange: [-90, 90],
@@ -143,7 +149,7 @@ render() {
     const containerWidth = switchWidth > buttonWidth ? switchWidth : buttonWidth;
     return (
       <TouchableWithoutFeedback
-        onPress={this.startGroupAnimations}
+        onPress={!disableSwitch ? this.startGroupAnimations : () =>switchOffCallback()}
       >
         <View
           style={[
