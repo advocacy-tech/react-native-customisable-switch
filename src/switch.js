@@ -73,14 +73,15 @@ export default class Switch extends Component {
       buttonBackgroundColor: new Animated.Value(props.value ? 90 : -90),
     };
   }
-  componentWillReceiveProps(nextProps) {
-    this.setState({
+  static getDerivedStateFromProps(nextProps, prevState) {
+    return {
       value: nextProps.defaultValue,
       transformValue: new Animated.Value(nextProps.value ? this.transformValue : this.padding),
       backgroundColor: new Animated.Value(nextProps.value ? 90 : -90),
       buttonBackgroundColor: new Animated.Value(nextProps.value ? 90 : -90)
-    });
+    };
   }
+
   startGroupAnimations = () => {
     const { animationTime, onChangeValue, switchOffCallback } = this.props;
     this.setState({ value: !this.state.value }, () => {
