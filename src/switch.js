@@ -7,6 +7,8 @@ import {
 } from 'react-native';
 import styles from './styles.js';
 import PropTypes from 'prop-types';
+let transformValue = 0;
+let padding = 0;
 export default class Switch extends Component {
   static propTypes = {
     defaultValue: PropTypes.bool,
@@ -64,11 +66,11 @@ export default class Switch extends Component {
   }
   constructor(props, context) {
     super(props, context);
-    this.padding = props.padding ? 3 : 0;
-    this.transformValue = (props.switchWidth - props.buttonWidth - this.padding);
+    padding = props.padding ? 3 : 0;
+    transformValue = (props.switchWidth - props.buttonWidth - padding);
     this.state = {
       value: props.defaultValue,
-      transformValue: new Animated.Value(props.value ? this.transformValue : this.padding),
+      transformValue: new Animated.Value(props.value ? transformValue : padding),
       backgroundColor: new Animated.Value(props.value ? 90 : -90),
       buttonBackgroundColor: new Animated.Value(props.value ? 90 : -90),
     };
@@ -76,7 +78,7 @@ export default class Switch extends Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     return {
       value: nextProps.defaultValue,
-      transformValue: new Animated.Value(nextProps.value ? this.transformValue : this.padding),
+      transformValue: new Animated.Value(nextProps.value ? transformValue : padding),
       backgroundColor: new Animated.Value(nextProps.value ? 90 : -90),
       buttonBackgroundColor: new Animated.Value(nextProps.value ? 90 : -90)
     };
@@ -88,7 +90,7 @@ export default class Switch extends Component {
       const { value } = this.state;
       Animated.parallel([
         Animated.spring(this.state.transformValue, {
-          toValue: value ? this.transformValue : this.padding,
+          toValue: value ? transformValue : padding,
           duration: animationTime,
         }),
         Animated.timing(this.state.backgroundColor, {
