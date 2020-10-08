@@ -7,15 +7,13 @@ import {
 } from 'react-native';
 import styles from './styles.js';
 import PropTypes from 'prop-types';
-let transformValue = 0;
-let padding = 0;
 export default class Switch extends Component {
   static propTypes = {
     defaultValue: PropTypes.bool,
     onChangeValue: PropTypes.func,
     activeText: PropTypes.string,
     inactiveText: PropTypes.string,
-    fontSize: PropTypes.number, 
+    fontSize: PropTypes.number,
     activeTextColor: PropTypes.string,
     inactiveTextColor: PropTypes.string,
     activeBackgroundColor: PropTypes.string,
@@ -66,22 +64,28 @@ export default class Switch extends Component {
   }
   constructor(props, context) {
     super(props, context);
-    padding = props.padding ? 3 : 0;
-    transformValue = (props.switchWidth - props.buttonWidth - padding);
+    this.padding = props.padding ? 3 : 0;
+    this.transformValue = (props.switchWidth - props.buttonWidth - this.padding);
     this.state = {
       value: props.defaultValue,
-      transformValue: new Animated.Value(props.value ? transformValue : padding),
+      transformValue: new Animated.Value(props.value ? this.transformValue : this.padding),
       backgroundColor: new Animated.Value(props.value ? 90 : -90),
       buttonBackgroundColor: new Animated.Value(props.value ? 90 : -90),
     };
   }
   static getDerivedStateFromProps(nextProps, prevState) {
-    return {
-      value: nextProps.defaultValue,
-      transformValue: new Animated.Value(nextProps.value ? transformValue : padding),
-      backgroundColor: new Animated.Value(nextProps.value ? 90 : -90),
-      buttonBackgroundColor: new Animated.Value(nextProps.value ? 90 : -90)
-    };
+    return nextProps.defaultValue !== prevState.value;
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.defaultValue !== nextState.value) {
+      this.setState({
+        value: nextProps.defaultValue,
+        transformValue: new Animated.Value(nextProps.value ? this.transformValue : this.padding),
+        backgroundColor: new Animated.Value(nextProps.value ? 90 : -90),
+        buttonBackgroundColor: new Animated.Value(nextProps.value ? 90 : -90),
+      });
+    }
+    return true;
   }
 
   startGroupAnimations = () => {
@@ -90,7 +94,7 @@ export default class Switch extends Component {
       const { value } = this.state;
       Animated.parallel([
         Animated.spring(this.state.transformValue, {
-          toValue: value ? transformValue : padding,
+          toValue: value ? this.transformValue : this.padding,
           duration: animationTime,
         }),
         Animated.timing(this.state.backgroundColor, {
@@ -104,7 +108,7 @@ export default class Switch extends Component {
       ]).start(onChangeValue(value));
     });
   }
-render() {
+  render() {
     const {
       transformValue,
       backgroundColor,
@@ -144,7 +148,7 @@ render() {
     const buttonBackgroundColorValue = buttonBackgroundColor.interpolate({
       inputRange: [-90, 90],
       outputRange: [
-        inactiveButtonBackgroundColor, 
+        inactiveButtonBackgroundColor,
         activeButtonBackgroundColor,
       ],
     });
@@ -152,7 +156,7 @@ render() {
     const containerWidth = switchWidth > buttonWidth ? switchWidth : buttonWidth;
     return (
       <TouchableWithoutFeedback
-        onPress={!disableSwitch ? this.startGroupAnimations : () =>switchOffCallback()}
+        onPress={!disableSwitch ? this.startGroupAnimations : () => switchOffCallback()}
       >
         <View
           style={[
@@ -165,7 +169,7 @@ render() {
         >
           <Animated.View
             style={[
-              { 
+              {
                 backgroundColor: backgroundColorValue,
                 height: switchHeight,
                 width: switchWidth,
@@ -174,8 +178,8 @@ render() {
                 borderColor: switchBorderColor,
                 zIndex: 1,
                 position: 'absolute',
-                top: (containerHeight - switchHeight)/2,
-                left: (containerWidth - switchWidth)/2,
+                top: (containerHeight - switchHeight) / 2,
+                left: (containerWidth - switchWidth) / 2,
               }
             ]}
           >
@@ -185,38 +189,38 @@ render() {
               ]}
             >
               <View style={styles.textContainer}>
-                <Text style={{ 
+                <Text style={{
                   color: activeTextColor,
                   fontSize,
                 }}>
                   {value ? activeText : ''}
                 </Text>
-              </View>  
+              </View>
               <View style={styles.textContainer}>
-                <Text style={{ 
+                <Text style={{
                   color: inactiveTextColor,
                   fontSize,
                 }}>
                   {value ? '' : inactiveText}
                 </Text>
-              </View>  
+              </View>
             </View>
           </Animated.View>
           <Animated.View style={[
-              {
-                backgroundColor: buttonBackgroundColorValue,
-                borderRadius: buttonBorderRadius,
-                borderWidth: buttonBorderWidth,
-                borderColor: buttonBorderColor,
-                width: buttonWidth,
-                height: buttonHeight,
-                zIndex: 3,
-                position: 'absolute',
-                top: (containerHeight - buttonHeight)/2,
-                left: transformValue,
-              }
-            ]}
-          > 
+            {
+              backgroundColor: buttonBackgroundColorValue,
+              borderRadius: buttonBorderRadius,
+              borderWidth: buttonBorderWidth,
+              borderColor: buttonBorderColor,
+              width: buttonWidth,
+              height: buttonHeight,
+              zIndex: 3,
+              position: 'absolute',
+              top: (containerHeight - buttonHeight) / 2,
+              left: transformValue,
+            }
+          ]}
+          >
           </Animated.View>
         </View>
       </TouchableWithoutFeedback>
